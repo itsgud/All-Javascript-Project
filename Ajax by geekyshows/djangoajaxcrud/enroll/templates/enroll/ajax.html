@@ -1,0 +1,61 @@
+<script>
+     $('#btnsave').click(function(){
+        console.log("Save Button clicked");
+        
+        let nm=$("#nameid").val()
+        
+        let em=$("#emailid").val()
+        let pw=$("#passwordid").val()
+        let csr=$("input[name=csrfmiddlewaretoken]").val();
+        if(nm=="")
+          console.log("pliz enter name ");
+          //console.log("name is : ",nm);
+        else if(em=="")
+         console.log("pliz enter email: ");
+        else if(pw=="")
+           console.log("pliz enter password");
+       
+           else{
+                   console.log(nm);
+                    console.log(em);
+                    console.log(pw);
+
+                mydata={name:nm,email:em,password:pw,csrfmiddlewaretoken:csr};
+
+                $.ajax({
+                    url: " {% url 'save' %} ",
+                    method: "POST",
+                    data:mydata,
+                    success:function(data){
+                       // console.log(data.status);
+                        if(data.status=="Save")
+                            console.log("Form Submitted Successfully");
+                            console.log(data.student_data);
+                            { for i in data.student_data }
+                              { output+= "<tr> <td> "+i.id+ "</td><td>"+
+                                                    i.name+"</td><td>"+
+                                                    i.email+"</td><td>"+
+                                                    i.password+"</td><td> <input type='button'  
+                                                        data-sid= "+{{i.id}}+" value='Edit' 
+                                                        class='btn btn-warning btn-sm' > 
+
+                                                        <input type='button'  
+                                                        data-sid= "+{{i.id}}+" value='Delete' 
+                                                        class='btn btn-danger btn-sm' > ";
+                              }
+
+                                                 $("#tbody").html(output); 
+                                                 $("form")[0].reset();   
+
+                            
+                            
+                        if (data.status==0)
+                            console.log("Unable to Save Form");
+                    },
+                });
+                }
+        
+     });
+     
+     
+</script>
